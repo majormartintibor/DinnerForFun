@@ -1,0 +1,59 @@
+﻿@page "/ShowDinner/{Id}"
+
+@if (
+    dinner is null || 
+    dinnerDetails is null || 
+    dinnerStatusHistory is null || 
+    dinnerTagHistory is null)
+{
+    <MudProgressLinear />
+}
+else
+{
+    <MudSlider T=int @ref="versionSlider" Class="pt-5"
+           Value="versionSliderValue" Min="1" Max="@dinner.Version"
+           ValueChanged="@((int value) => UpdateProjectionsAsync(versionSlider!.Value))"
+           TickMarks=true Variant="Variant.Filled">
+        Version: @versionSlider!.Value.ToString()
+    </MudSlider>
+
+    <MudPaper Elevation="1" Class="pt-5">
+        <MudButton OnClick="AnnounceAsync" Disabled="dinner.DinnerStatus != DinnerStatus.New">Announce</MudButton>
+        <MudButton OnClick="AcceptAsync" Disabled="dinner.DinnerStatus != DinnerStatus.Announced">Accept</MudButton>
+        <MudButton OnClick="FinishAsync" Disabled="dinner.DinnerStatus != DinnerStatus.Accepted">Finish</MudButton>
+        <MudButton OnClick="RateAsync" Disabled="dinner.DinnerStatus != DinnerStatus.Finished">Rate</MudButton>
+    </MudPaper>
+
+    <MudPaper Elevation="1" Class="pt-5">
+        <MudSelect T="string" MultiSelection="true" Disabled="dinner.DinnerStatus >= DinnerStatus.Finished"
+            SelectedValues="selectedTags" SelectedValuesChanged="((IEnumerable<string> values) => UpdateTagsAsync(values))">
+            @foreach (var tag in tags)
+            {
+                <MudSelectItem T="string" Value="@tag">@tag</MudSelectItem>
+            }
+        </MudSelect>
+    </MudPaper>
+
+    <MudPaper Elevation="1" Class="pt-5">
+        <MudText>Dinner Details</MudText>
+        <MudText>Version: @dinnerDetails.Version</MudText>
+        <MudText>Todo: add tag feature</MudText>
+        <MudText>Dinner Status: @dinnerDetails.DinnerStatus.ToString()</MudText>
+        <MudText>Tags: @string.Join(", ", @dinnerDetails.Tags.Select(x => $"\"{x}\""))</MudText>
+    </MudPaper>
+
+    <MudPaper Elevation="1" Class="pt-5">
+        <MudText>Dinner state at version @versionSliderValue.ToString(): @dinnerStatusHistory.DinnerStatus.ToString()</MudText>
+    </MudPaper>
+
+    <MudPaper Elevation="1" Class="pt-5">
+        @if (@dinnerTagHistory.Tags.Count == 0)
+        {
+            <MudText>Dinner tags at version @versionSliderValue.ToString():</MudText>
+        }
+        else
+        {
+            <MudText>Dinner tags at version @versionSliderValue.ToString(): @string.Join(", ", dinnerTagHistory.Tags.Select(x => $"\"{x}\""))</MudText>
+        }
+    </MudPaper>
+}

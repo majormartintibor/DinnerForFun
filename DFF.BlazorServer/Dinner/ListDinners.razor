@@ -1,0 +1,11 @@
+﻿@page "/ListDinners"
+
+<MudButton OnClick="CreateNewDinnerAsync" Class="pt-10">Create new Dinner</MudButton>
+
+@foreach(var dinner in dinners)
+{
+    <MudPaper Elevation="1">
+        <MudText>@dinner.Id</MudText>
+        <MudButton OnClick="@(() => Open(dinner.Id))">Open</MudButton>
+    </MudPaper>
+}
