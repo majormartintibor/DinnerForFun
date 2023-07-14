@@ -3,8 +3,7 @@
 public sealed record Dinner(
     Guid Id,
     Guid HostingUserId,
-    List<string> Tags,
-    //consider removing initialization and move setting of DinnerStatus.New to DinnerCreated
+    List<string> Tags,    
     DinnerStatus DinnerStatus = DinnerStatus.New,
     int Version = 1)
 {
